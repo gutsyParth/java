@@ -1,0 +1,1457 @@
+In Java, every application begins with a class name, and that class must match the filename. So if your class is called Main, the file must be saved as Main.java. This is because Java uses the class name to find and run your code. If the names don't match, Java will give an error and the program will not run.
+
+Every line of code that runs in Java must be inside a class.
+The class name should always start with an uppercase first letter.
+
+main() is the starting point of every Java program.
+
+A computer program is a list of "instructions" to be "executed" by a computer.
+In a programming language, these programming instructions are called statements.
+
+Single quotes are allowed in Java, but only for single character literals. You cannot use them to define multi-character text strings like you do in JavaScript or Python.
+
+If you don't want others (or yourself) to overwrite existing values, use the final keyword (this will declare the variable as "final" or "constant", which means unchangeable and read-only):
+final int myNum = 15;
+myNum = 20;  // will generate an error: cannot assign a value to a final variable
+
+const actually is a reserved keyword in Java, but it has no implementation or functionality.
+
+Be careful when combining text and numbers in the same line of code. Without parentheses, Java will treat the numbers as text after the first string:
+int x = 5;
+int y = 6;
+
+System.out.println("The sum is " + x + y);   // Prints: The sum is 56
+System.out.println("The sum is " + (x + y)); // Prints: The sum is 11
+
+You can also assign the same value to multiple variables in one line:
+int x, y, z;
+x = y = z = 50;
+System.out.println(x + y + z); // 150
+
+
+All Java variables must be identified with unique names.
+These unique names are called identifiers.
+
+General rules for naming variables are:
+✅ Can contain letters (A–Z, a–z), digits (0–9), underscore (_), and dollar sign ($).
+✅ Must start with a letter, _, or $.
+❌ Cannot start with a digit.
+✅ Variable names should generally start with a lowercase letter (Java convention).
+❌ Cannot contain spaces/whitespace.
+✅ Java is case-sensitive (myVar ≠ myvar).
+❌ Cannot use Java keywords/reserved words (e.g., int, boolean, class, public).
+
+There are 8 primitive data types in Java - byte, short, int, long, float, double, boolean and char
+
+Integer types- byte, short, int, long
+Floating point types- float, double
+
+Once a variable is declared with a type, it cannot change to another type later in the program.
+
+Long- You should end the value with an "L".
+long myNum = 15000000000L;
+System.out.println(myNum);
+
+The float and double data types can store fractional numbers. Note that you should end the value with an "f" for floats and "d" for doubles:
+
+float myNum = 5.75f;
+System.out.println(myNum);
+
+double myNum1 = 19.99d;
+System.out.println(myNum1);
+
+A floating point number can also be a scientific number with an "e" to indicate the power of 10:
+float f1 = 35e3f;
+double d1 = 12E4d;
+System.out.println(f1);
+System.out.println(d1);
+OUTPUT:
+35000.0
+120000.0
+
+The character must be surrounded by single quotes, like 'A' or 'c':
+char myGrade = 'B';
+System.out.println(myGrade);
+
+If you are familiar with ASCII values, you can use those to display certain characters:
+char myVar1 = 65, myVar2 = 66, myVar3 = 67;
+System.out.println(myVar1);
+System.out.println(myVar2);
+System.out.println(myVar3);
+
+OUTPUT:
+A
+B
+C
+
+Non-primitive data types are called reference types because they refer to objects.
+
+Primitive types in Java are predefined and built into the language, while non-primitive types are created by the programmer (except for String).
+
+Primitive types start with a lowercase letter (like int), while non-primitive types typically starts with an uppercase letter (like String).
+
+Primitive types always hold a value, whereas non-primitive types can be null.
+If you do not assign a value to a primitive instance variable, it automatically falls back to a predefined default value like 0 or false.
+
+The var keyword lets the compiler automatically detect the type of a variable based on the value you assign to it.
+
+var x = 5;  // x is an int
+System.out.println(x);
+
+var only works when you assign a value at the same time (you can't declare var x; without assigning a value):
+var x; // Error
+var x = 5;  // OK
+
+Once the type is chosen, it stays the same. See example below:
+var x = 5;  // x is now an int
+x = 10;     // OK - still an int
+x = 9.99;   // Error - can't assign a double to an int
+
+In Java, there are two main types of casting:
+Widening Casting (automatic) - converting a smaller type to a larger type size
+byte -> short -> char -> int -> long -> float -> double
+
+Narrowing Casting (manual) - converting a larger type to a smaller type size
+double -> float -> long -> int -> char -> short -> byte
+
+int myInt = 9;
+double myDouble = myInt; // Automatic casting: int to double
+System.out.println(myInt);    // Outputs 9
+System.out.println(myDouble); // Outputs 9.0
+
+Narrowing casting must be done manually by placing the type in parentheses () in front of the value.
+
+double myDouble = 9.78d;
+int myInt = (int) myDouble; // Manual casting: double to int
+System.out.println(myDouble); // Outputs 9.78
+System.out.println(myInt);    // Outputs 9
+
+Here are some common operators, from highest to lowest priority:
+()  Parentheses
+*, /, %  Multiplication, Division, Modulus
++, -  Addition, Subtraction
+>, <, >=, <=  Comparison
+==, !=  Equality
+&&  Logical AND
+||  Logical OR
+=  Assignment
+
+
+Subtraction and addition are done from left to right, unless you add parentheses:
+
+A String in Java is actually an object, which means it contains methods that can perform certain operations on strings.
+
+If you add a number and a string, the result will be a string concatenation:
+String x = "10";
+int y = 20;
+String z = x + y;  // z will be 1020 (a String)
+
+The Math.pow() method always returns a double, even if the result is a whole number. For example, Math.pow(2, 8) returns 256.0 (not 256).
+
+Math.random() returns a random number between 0.0 (inclusive), and 1.0 (exclusive)
+
+To declare an array, define the variable type with square brackets [ ] :
+String[] cars;
+
+String[] cars = {"Volvo", "BMW", "Ford", "Mazda"};
+
+To find out how many elements an array has, use the length property:
+
+
+You can also create an array by specifying its size with new. This makes an empty array with space for a fixed number of elements, which you can fill later:
+String[] cars = new String[4]; // size is 4
+
+cars[0] = "Volvo";
+cars[1] = "BMW";
+cars[2] = "Ford";
+cars[3] = "Mazda";
+
+System.out.println(cars[0]); // Outputs Volvo
+
+However, if you already know the values, you don't need to write new. Both of these create the same array:
+// With new
+String[] cars = new String[] {"Volvo", "BMW", "Ford", "Mazda"};
+
+// Shortcut (most common)
+String[] cars = {"Volvo", "BMW", "Ford", "Mazda"};
+
+
+Note: You cannot write new String[4] {"Volvo", "BMW", "Ford", "Mazda"}.
+
+In Java, when using new, you either:
+
+Use new String[4] to create an empty array with 4 slots, and then fill them later
+Or use new String[] {"Volvo", "BMW", "Ford", "Mazda"} (without specifying the number of elements) to create the array and assign values at the same time
+Tip: The shortcut syntax is most often used when the values are known at the start. Use new with a size when you want to create an empty array and fill it later.
+
+The for-each loop is great when you only need to read elements. If you want to change the elements later, or keep track of their index, use a regular for loop instead.
+
+
+public class Main {
+  static void myMethod() {
+    // code to be executed
+  }
+}
+static means that the method belongs to the Main class and not an object of the Main class. You will learn more about objects and how to access methods through objects later in this tutorial.
+
+public class Main {
+  static void myMethod(String fname) {
+    System.out.println(fname + " Refsnes");
+  }
+
+  public static void main(String[] args) {
+    myMethod("Liam");
+    myMethod("Jenny");
+    myMethod("Anja");
+  }
+}
+// Liam Refsnes
+// Jenny Refsnes
+// Anja Refsnes
+
+When a parameter is passed to the method, it is called an argument. So, from the example above: fname is a parameter, while Liam, Jenny and Anja are arguments.
+
+With method overloading, multiple methods can have the same name with different parameters:
+int myMethod(int x)
+float myMethod(float x)
+double myMethod(double x, double y)
+
+Multiple methods can have the same name as long as the number and/or type of parameters are different.
+
+
+In Java, an object is created from a class. After defining a class, you can create objects from it using the new keyword:
+public class Main {
+  int x = 5;
+
+  public static void main(String[] args) {
+    Main myObj = new Main();
+    System.out.println(myObj.x);
+  }
+}
+
+public class Main {
+  int x = 5;
+
+  public static void main(String[] args) {
+    Main myObj1 = new Main();  // Object 1
+    Main myObj2 = new Main();  // Object 2
+    System.out.println(myObj1.x);
+    System.out.println(myObj2.x);
+  }
+}
+
+
+You can also create an object of a class and access it in another class. This is often used for better organization of classes (one class has all the attributes and methods, while the other class holds the main() method (code to be executed)).
+
+Remember that the name of the java file should match the class name. In this example, we have created two files in the same directory/folder:
+Main.java
+Second.java
+
+Main.java
+public class Main {
+  int x = 5;
+}
+
+Second.java
+class Second {
+  public static void main(String[] args) {
+    Main myObj = new Main();
+    System.out.println(myObj.x);
+  }
+}
+
+
+In Java, variables declared inside a class are called "attributes".
+Another name for attributes is fields.
+
+If you create multiple objects of one class, you can change the attribute values in one object, without affecting the attribute values in the other:
+Change the value of x to 25 in myObj2, and leave x in myObj1 unchanged:
+public class Main {
+  int x = 5;
+
+  public static void main(String[] args) {
+    Main myObj1 = new Main();  // Object 1
+    Main myObj2 = new Main();  // Object 2
+    myObj2.x = 25;
+    System.out.println(myObj1.x);  // Outputs 5
+    System.out.println(myObj2.x);  // Outputs 25
+  }
+}
+
+
+A constructor in Java is a special method that is used to initialize objects.
+The constructor is called when an object of a class is created.
+It can be used to set initial values for object attributes:
+// Create a Main class
+public class Main {
+  int x;  // Create a class attribute
+
+  // Create a class constructor for the Main class
+  public Main() {
+    x = 5;  // Set the initial value for the class attribute x
+  }
+
+  public static void main(String[] args) {
+    Main myObj = new Main(); // Create an object of class Main (This will call the constructor)
+    System.out.println(myObj.x); // Print the value of x
+  }
+}
+
+// Outputs 5
+
+Note that the constructor name must match the class name, and it cannot have a return type (like void).
+
+All classes have constructors by default: if you do not create a class constructor yourself, Java creates one for you. However, then you are not able to set initial values for object attributes.
+
+The this keyword in Java refers to the current object in a method or constructor.
+The this keyword is often used to avoid confusion when class attributes have the same name as method or constructor parameters.
+
+
+Sometimes a constructor or method has a parameter with the same name as a class variable. When this happens, the parameter temporarily hides the class variable inside that method or constructor.
+
+To refer to the class variable and not the parameter, you can use the this keyword:
+public class Main {
+  int x;  // Class variable x
+
+  // Constructor with one parameter x
+  public Main(int x) {
+    this.x = x; // refers to the class variable x
+  }
+
+  public static void main(String[] args) {
+    // Create an object of Main and pass the value 5 to the constructor
+    Main myObj = new Main(5);
+    System.out.println("Value of x = " + myObj.x);
+  }
+}
+
+Calling a Constructor from Another Constructor
+You can also use this() to call another constructor in the same class.
+
+This is useful when you want to provide default values or reuse initialization code instead of repeating it.
+
+public class Main {
+  int modelYear;
+  String modelName;
+
+  // Constructor with one parameter
+  public Main(String modelName) {
+    // Call the two-parameter constructor to reuse code and set a default year    
+    this(2020, modelName);
+  }
+
+  // Constructor with two parameters
+  public Main(int modelYear, String modelName) {
+    // Use 'this' to assign values to the class variables
+    this.modelYear = modelYear;
+    this.modelName = modelName;
+  }
+
+  // Method to print car information
+  public void printInfo() {
+    System.out.println(modelYear + " " + modelName);
+  }
+
+  public static void main(String[] args) {
+    // Create a car with only model name (uses default year)
+    Main car1 = new Main("Corvette");
+
+    // Create a car with both model year and name
+    Main car2 = new Main(1969, "Mustang");
+
+    car1.printInfo();
+    car2.printInfo();
+  }
+}
+
+
+We divide modifiers into two groups:
+Access Modifiers - controls the access level
+Non-Access Modifiers - do not control access level, but provides other functionality
+
+For classes, you can use either public or default:
+public:	The class is accessible by any other class
+default:	The class is only accessible by classes in the same package. This is used when you don't specify a modifier. 
+
+For attributes, methods and constructors, you can use the one of the following:
+public:	The code is accessible for all classes
+private:	The code is only accessible within the declared class
+default:	The code is only accessible in the same package. This is used when you don't specify a modifier.
+protected: The code is accessible in the same package and subclasses.
+
+
+Non-access modifiers do not control visibility (like public or private), but instead add other features to classes, methods, and attributes.
+The most commonly used non-access modifiers are final, static, and abstract.
+
+A static method belongs to the class, not to any specific object. This means you can call it without creating an object of the class.
+
+An abstract method belongs to an abstract class, and it does not have a body. The body is provided by the subclass:
+
+Main.java
+// abstract class
+abstract class Main {
+  public String fname = "John";
+  public int age = 24;
+  public abstract void study(); // abstract method
+}
+
+// Subclass (inherit from Main)
+class Student extends Main {
+  public int graduationYear = 2018;
+  public void study() { // the body of the abstract method is provided here
+    System.out.println("Studying all day long");
+  }
+}
+
+Second.java
+// Code from filename: Second.java
+class Second {
+  public static void main(String[] args) {
+    // create an object of the Student class (which inherits attributes and methods from Main)
+    Student myObj = new Student();
+
+    System.out.println("Name: " + myObj.fname);
+    System.out.println("Age: " + myObj.age);
+    System.out.println("Graduation Year: " + myObj.graduationYear);
+    myObj.study(); // call abstract method
+  }
+}
+
+For classes, you can use either final or abstract:
+final	The class cannot be inherited by other classes
+abstract	The class cannot be used to create objects (To access an abstract class, it must be inherited from another class.)
+
+
+
+For attributes and methods, you can use the one of the following:
+final	Attributes and methods cannot be overridden/modified
+
+static	Attributes and methods belong to the class, not to objects. This means all objects share the same static attribute, and static methods can be called without creating objects.
+
+abstract	Can only be used in an abstract class, and can only be used on methods. The method does not have a body, for example abstract void run();. The body is provided by the subclass (inherited from).
+
+transient	Attributes and methods are skipped when serializing the object containing them
+
+synchronized	Methods can only be accessed by one thread at a time
+
+volatile	The value of an attribute is not cached thread-locally, and is always read from the "main memory"
+
+
+
+The meaning of Encapsulation, is to make sure that "sensitive" data is hidden from users. To achieve this, you must:
+
+declare class variables/attributes as private
+provide public get and set methods to access and update the value of a private variable
+
+
+
+You learned from the previous chapter that private variables can only be accessed within the same class (an outside class has no access to it). However, it is possible to access them if we provide public get and set methods.
+
+The get method returns the variable value, and the set method sets the value.
+
+Syntax for both is that they start with either get or set, followed by the name of the variable, with the first letter in upper case:
+
+public class Person {
+  private String name; // private = restricted access
+
+  // Getter
+  public String getName() {
+    return name;
+  }
+
+  // Setter
+  public void setName(String newName) {
+    this.name = newName;
+  }
+}
+
+public class Main {
+  public static void main(String[] args) {
+    Person myObj = new Person();
+    myObj.setName("John"); // Set the value of the name variable to "John"
+    System.out.println(myObj.getName());
+  }
+}
+
+// Outputs "John"
+
+A package in Java is used to group related classes. Think of it as a folder in a file directory. We use packages to avoid name conflicts, and to write a better maintainable code. Packages are divided into two categories:
+
+Built-in Packages (packages from the Java API)
+User-defined Packages (create your own packages)
+
+
+The Java API is a library of prewritten classes, that are free to use, included in the Java Development Environment. The library contains components for managing input, database programming, and much much more.
+
+The library is divided into packages and classes. Meaning you can either import a single class (along with its methods and attributes), or a whole package that contain all the classes that belong to the specified package.
+
+To use a class or a package from the library, you need to use the import keyword:
+import package.name.Class;   // Import a single class
+import package.name.*;   // Import the whole package
+
+
+Import a Class
+If you find a class you want to use, for example, the Scanner class, which is used to get user input, write the following code:
+import java.util.Scanner;
+
+
+In the example above, java.util is a package, while Scanner is a class of the java.util package.
+
+To use the Scanner class, create an object of the class and use any of the available methods found in the Scanner class documentation. In our example, we will use the nextLine() method, which is used to read a complete line:
+
+import java.util.Scanner;
+
+class Main {
+  public static void main(String[] args) {
+    Scanner myObj = new Scanner(System.in);
+    System.out.println("Enter username");
+
+    String userName = myObj.nextLine();
+    System.out.println("Username is: " + userName);
+  }
+}
+
+
+To import a whole package, end the sentence with an asterisk sign (*). The following example will import ALL the classes in the java.util package:
+import java.util.*;
+
+To create a package, use the package keyword:
+
+MyPackageClass.java
+package mypack;
+class MyPackageClass {
+  public static void main(String[] args) {
+    System.out.println("This is my package!");
+  }
+}
+
+Save the file as MyPackageClass.java, and compile it:
+C:\Users\Your Name>javac MyPackageClass.java
+
+Then compile the package:
+C:\Users\Your Name>javac -d . MyPackageClass.java
+
+This forces the compiler to create the "mypack" package.
+
+The -d keyword specifies the destination for where to save the class file. You can use any directory name, like c:/user (windows), or, if you want to keep the package within the same directory, you can use the dot sign ".", like in the example above.
+
+Note: The package name should be written in lower case to avoid conflict with class names.
+
+When we compiled the package in the example above, a new folder was created, called "mypack".
+
+To run the MyPackageClass.java file, write the following:
+C:\Users\Your Name>java mypack.MyPackageClass
+
+The output will be:
+This is my package!
+
+In Java, it is possible to inherit attributes and methods from one class to another. We group the "inheritance concept" into two categories:
+subclass (child) - the class that inherits from another class
+superclass (parent) - the class being inherited from
+
+To inherit from a class, use the extends keyword.
+
+In the example below, the Car class (subclass) inherits the attributes and methods from the Vehicle class (superclass):
+
+class Vehicle {
+  protected String brand = "Ford";        // Vehicle attribute
+  public void honk() {                    // Vehicle method
+    System.out.println("Tuut, tuut!");
+  }
+}
+
+class Car extends Vehicle {
+  private String modelName = "Mustang";    // Car attribute
+  public static void main(String[] args) {
+
+    // Create a myCar object
+    Car myCar = new Car();
+
+    // Call the honk() method (from the Vehicle class) on the myCar object
+    myCar.honk();
+
+    // Display the value of the brand attribute (from the Vehicle class) and the value of the modelName from the Car class
+    System.out.println(myCar.brand + " " + myCar.modelName);
+  }
+}
+
+Did you notice the protected modifier in Vehicle?
+
+We set the brand attribute in Vehicle to a protected access modifier. If it was set to private, the Car class would not be able to access it.
+
+
+The final Keyword
+If you don't want other classes to inherit from a class, use the final keyword:
+
+If you try to access a final class, Java will generate an error:
+
+final class Vehicle {
+  ...
+}
+
+class Car extends Vehicle {
+  ...
+}
+
+
+Polymorphism:
+
+class Animal {
+  public void animalSound() {
+    System.out.println("The animal makes a sound");
+  }
+}
+
+class Pig extends Animal {
+  public void animalSound() {
+    System.out.println("The pig says: wee wee");
+  }
+}
+
+class Dog extends Animal {
+  public void animalSound() {
+    System.out.println("The dog says: bow wow");
+  }
+}
+
+class Main {
+  public static void main(String[] args) {
+    Animal myAnimal = new Animal();  // Create a Animal object
+    Animal myPig = new Pig();  // Create a Pig object
+    Animal myDog = new Dog();  // Create a Dog object
+    myAnimal.animalSound();
+    myPig.animalSound();
+    myDog.animalSound();
+  }
+}
+
+
+In Java, the super keyword is used to refer to the parent class of a subclass.
+The most common use of the super keyword is to eliminate the confusion between superclasses and subclasses that have methods with the same name.
+
+If a subclass has a method with the same name as one in its parent class, you can use super to call the parent version:
+
+class Animal {
+  public void animalSound() {
+    System.out.println("The animal makes a sound");
+  }
+}
+
+class Dog extends Animal {
+  public void animalSound() {
+    super.animalSound(); // Call the parent method
+    System.out.println("The dog says: bow wow");
+  }
+}
+
+public class Main {
+  public static void main(String[] args) {
+    Dog myDog = new Dog();
+    myDog.animalSound();
+  }
+}
+
+OUTPUT:
+The animal makes a sound
+The dog says: bow wow
+
+You can also use super to access an attribute from the parent class if they have an attribute with the same name:
+
+class Animal {
+  String type = "Animal";
+}
+
+class Dog extends Animal {
+  String type = "Dog";
+
+  public void printType() {
+    System.out.println(super.type); // Access parent attribute
+  }
+}
+
+public class Main {
+  public static void main(String[] args) {
+    Dog myDog = new Dog();
+    myDog.printType();
+  }
+}
+
+OUTPUT:
+Animal
+
+class Animal {
+  Animal() {
+    System.out.println("Animal is created");
+  }
+}
+
+class Dog extends Animal {
+  Dog() {
+    super(); // Call parent constructor
+    System.out.println("Dog is created");
+  }
+}
+
+public class Main {
+  public static void main(String[] args) {
+    Dog myDog = new Dog();
+  }
+}
+
+OUTPUT:
+Animal is created
+Dog is created
+
+The call to super() must be the first statement in the subclass constructor.
+
+
+Java Inner Classes
+In Java, it is also possible to nest classes (a class within a class). The purpose of nested classes is to group classes that belong together, which makes your code more readable and maintainable.
+
+To access the inner class, create an object of the outer class, and then create an object of the inner class:
+
+class OuterClass {
+  int x = 10;
+
+  class InnerClass {
+    int y = 5;
+  }
+}
+
+public class Main {
+  public static void main(String[] args) {
+    OuterClass myOuter = new OuterClass();
+    OuterClass.InnerClass myInner = myOuter.new InnerClass();
+    System.out.println(myInner.y + myOuter.x);
+  }
+}
+
+// Outputs 15 (5 + 10)
+
+
+Private Inner Class
+Unlike a "regular" class, an inner class can be private or protected. If you don't want outside objects to access the inner class, declare the class as private:
+
+class OuterClass {
+  int x = 10;
+
+  private class InnerClass {
+    int y = 5;
+  }
+}
+
+public class Main {
+  public static void main(String[] args) {
+    OuterClass myOuter = new OuterClass();
+    OuterClass.InnerClass myInner = myOuter.new InnerClass();
+    System.out.println(myInner.y + myOuter.x);
+  }
+}
+ 
+If you try to access a private inner class from an outside class, an error occurs:
+
+Main.java:13: error: OuterClass.InnerClass has private access in OuterClass
+    OuterClass.InnerClass myInner = myOuter.new InnerClass();
+
+
+Static Inner Class
+An inner class can also be static, which means that you can access it without creating an object of the outer class:
+
+class OuterClass {
+  int x = 10;
+
+  static class InnerClass {
+    int y = 5;
+  }
+}
+
+public class Main {
+  public static void main(String[] args) {
+    OuterClass.InnerClass myInner = new OuterClass.InnerClass();
+    System.out.println(myInner.y);
+  }
+}
+
+// Outputs 5
+
+Note: just like static attributes and methods, a static inner class does not have access to members of the outer class.
+
+
+class Test {
+    int x = 10;
+
+    static void main(String[] args) {
+        System.out.println(x); // ❌ Error
+    }
+}
+This fails because x belongs to an object, while main() belongs to the class.
+
+To access x, you need an object:
+class Test {
+    int x = 10;
+
+    public static void main(String[] args) {
+        Test obj = new Test();
+        System.out.println(obj.x); // ✅
+    }
+}
+
+Static Inner Class
+class Outer {
+    int x = 10;
+
+    static class Inner {
+        void show() {
+            System.out.println(x); // ❌ Error
+        }
+    }
+}
+
+What can a static inner class access directly?
+
+Only static members of the outer class:
+
+class Outer {
+    static int count = 100;
+    int x = 10;
+
+    static class Inner {
+        void show() {
+            System.out.println(count); // ✅
+            // System.out.println(x);  ❌
+        }
+    }
+}
+
+Why does a non-static inner class work?
+class Outer {
+    int x = 10;
+
+    class Inner {
+        void show() {
+            System.out.println(x); // ✅
+        }
+    }
+}
+
+Every non-static inner class object secretly stores a reference to its enclosing Outer object.
+
+
+
+class OuterClass {
+  int x = 10;
+
+  class InnerClass {
+    public int myInnerMethod() {
+      return x;
+    }
+  }
+}
+
+public class Main {
+  public static void main(String[] args) {
+    OuterClass myOuter = new OuterClass();
+    OuterClass.InnerClass myInner = myOuter.new InnerClass();
+    System.out.println(myInner.myInnerMethod());
+  }
+}
+
+// Outputs 10
+
+
+Data abstraction is the process of hiding certain details and showing only essential information to the user.
+Abstraction can be achieved with either abstract classes or interfaces.
+
+
+Abstract class: is a restricted class that cannot be used to create objects (to access it, it must be inherited from another class).
+
+Abstract method: can only be used in an abstract class, and it does not have a body. The body is provided by the subclass (inherited from).
+
+An abstract class can have both abstract and regular methods:
+abstract class Animal {
+  public abstract void animalSound();
+  public void sleep() {
+    System.out.println("Zzz");
+  }
+}
+
+
+From the example above, it is not possible to create an object of the Animal class:
+
+Animal myObj = new Animal(); // will generate an error
+
+To access the abstract class, it must be inherited from another class.
+
+// Abstract class
+abstract class Animal {
+  // Abstract method (does not have a body)
+  public abstract void animalSound();
+  // Regular method
+  public void sleep() {
+    System.out.println("Zzz");
+  }
+}
+
+// Subclass (inherit from Animal)
+class Pig extends Animal {
+  public void animalSound() {
+    // The body of animalSound() is provided here
+    System.out.println("The pig says: wee wee");
+  }
+}
+
+class Main {
+  public static void main(String[] args) {
+    Pig myPig = new Pig(); // Create a Pig object
+    myPig.animalSound();
+    myPig.sleep();
+  }
+}
+
+
+Why And When To Use Abstract Classes and Methods?
+To achieve security - hide certain details and only show the important details of an object.
+
+Abstraction can also be achieved with Interfaces, which you will learn more about in the next chapter.
+
+
+An interface defines a contract that classes must follow. It can contain abstract methods, default methods, static methods, constants, and private helper methods.
+
+// interface
+interface Animal {
+  public void animalSound(); // interface method (does not have a body)
+  public void run(); // interface method (does not have a body)
+}
+
+To access the interface methods, the interface must be "implemented" (kinda like inherited) by another class with the implements keyword (instead of extends). The body of the interface method is provided by the "implement" class:
+
+// Interface
+interface Animal {
+  public void animalSound(); // interface method (does not have a body)
+  public void sleep(); // interface method (does not have a body)
+}
+
+// Pig "implements" the Animal interface
+class Pig implements Animal {
+  public void animalSound() {
+    // The body of animalSound() is provided here
+    System.out.println("The pig says: wee wee");
+  }
+  public void sleep() {
+    // The body of sleep() is provided here
+    System.out.println("Zzz");
+  }
+}
+
+class Main {
+  public static void main(String[] args) {
+    Pig myPig = new Pig();  // Create a Pig object
+    myPig.animalSound();
+    myPig.sleep();
+  }
+}
+
+Interfaces cannot be instantiated directly, meaning you cannot create objects of an interface itself. However, you can create objects of classes that implement the interface and store them in interface references.
+
+Animal a = new Dog(); // ✅
+// Animal a = new Animal(); ❌
+
+Interfaces can contain:
+Abstract methods (no body)
+Default methods (with a body)
+Static methods (with a body)
+Private methods (with a body, Java 9+)
+
+When a class implements an interface, it must provide implementations for all inherited abstract methods unless the class itself is declared abstract.
+
+interface Animal {
+    void sound();
+}
+
+abstract class Dog implements Animal {
+    // OK: Dog is abstract
+}
+
+Interface methods declared without a body are implicitly public abstract.
+
+interface Animal {
+    void sound(); // same as public abstract void sound();
+}
+
+Interface attributes (fields) are implicitly public static final (constants).
+
+interface Animal {
+    int AGE = 10; // same as public static final int AGE = 10;
+}
+
+Interfaces cannot have constructors because interfaces themselves cannot be instantiated.
+
+Interfaces support multiple inheritance of type, meaning a class can implement multiple interfaces.
+
+class Dog implements Animal, Pet {
+    // ...
+}
+
+
+An anonymous class is a class without a name. It is created and used at the same time.
+
+You often use anonymous classes to override methods of an existing class or interface, without writing a separate class file.
+
+Here, we create an anonymous class that extends another class and overrides its method:
+
+// Normal class
+class Animal {
+  public void makeSound() {
+    System.out.println("Animal sound");
+  }
+}
+
+public class Main {
+  public static void main(String[] args) {
+    // Anonymous class that overrides makeSound()
+    Animal myAnimal = new Animal() {
+      public void makeSound() {
+        System.out.println("Woof woof");
+      }
+    }; // semicolon is required to end the line of code that creates the object
+
+    myAnimal.makeSound();
+  }
+}
+
+The output will be:
+Woof woof
+
+Anonymous Class from an Interface
+You can also use an anonymous class to implement an interface on the fly:
+
+// Interface
+interface Greeting {
+  void sayHello();
+}
+
+public class Main {
+  public static void main(String[] args) {
+    // Anonymous class that implements Greeting
+    Greeting greet = new Greeting() {
+      public void sayHello() {
+        System.out.println("Hello, World!");
+      }
+    };
+
+    greet.sayHello();
+  }
+}
+
+The output will be:
+Hello, World!
+
+
+When to Use Anonymous Classes?
+Use anonymous classes when you need to create a short class for one-time use. For example:
+
+Overriding a method without creating a new subclass
+Implementing an interface quickly
+Passing small pieces of behavior as objects
+
+
+
+The problem enums solve
+
+Suppose you're building a food delivery app.
+
+Without enums:
+
+String orderStatus = "DELIVERED";
+
+What's stopping someone from doing:
+
+orderStatus = "delivred";  // typo
+orderStatus = "banana";
+orderStatus = "xyz";
+
+Nothing.
+
+The compiler can't help you.
+
+With enums
+enum OrderStatus {
+    PENDING,
+    PREPARING,
+    OUT_FOR_DELIVERY,
+    DELIVERED
+}
+
+Now:
+
+OrderStatus status = OrderStatus.DELIVERED;
+
+Only these 4 values are allowed.
+
+status = OrderStatus.PENDING; // ✅
+status = "banana"; // ❌
+status = OrderStatus.CANCELLED; // ❌ doesn't exist
+
+The compiler catches mistakes.
+
+
+Is enum really a class?
+Yes.
+
+This surprises many beginners.
+When you write:
+enum Level {
+    LOW,
+    MEDIUM,
+    HIGH
+}
+
+Java secretly creates something conceptually similar to:
+final class Level {
+    public static final Level LOW = new Level();
+    public static final Level MEDIUM = new Level();
+    public static final Level HIGH = new Level();
+}
+
+So:
+Level myLevel = Level.HIGH;
+is actually storing a reference to one of those predefined objects.
+
+
+Enums can have fields and methods
+Example:
+enum Level {
+    LOW(1),
+    MEDIUM(2),
+    HIGH(3);
+
+    private int value;
+
+    Level(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
+}
+
+Usage:
+System.out.println(Level.HIGH.getValue());
+
+Output:
+3
+
+So enums are much more powerful than just constants.
+
+
+Step 1: What you see
+enum Level {
+    LOW("Low level"),
+    MEDIUM("Medium level"),
+    HIGH("High level");
+
+    private String description;
+
+    private Level(String description) {
+        this.description = description;
+    }
+}
+
+You see:
+
+LOW("Low level")
+
+and wonder:
+
+"Who is calling this constructor?"
+
+Step 2: What Java secretly does
+
+Think of it like:
+
+class Level {
+
+    public static final Level LOW =
+        new Level("Low level");
+
+    public static final Level MEDIUM =
+        new Level("Medium level");
+
+    public static final Level HIGH =
+        new Level("High level");
+
+    private String description;
+
+    private Level(String description) {
+        this.description = description;
+    }
+}
+
+Java does something conceptually similar behind the scenes.
+
+So:
+
+LOW("Low level")
+
+really means:
+
+new Level("Low level")
+
+and similarly:
+
+MEDIUM("Medium level")
+
+means:
+
+new Level("Medium level")
+
+and
+
+HIGH("High level")
+
+means:
+
+new Level("High level")
+Step 3: What happens when the program starts
+
+Java creates 3 objects:
+
+Object 1
+new Level("Low level")
+
+Constructor runs:
+
+description = "Low level";
+
+Stored in:
+
+Level.LOW
+Object 2
+new Level("Medium level")
+
+Constructor runs:
+
+description = "Medium level";
+
+Stored in:
+
+Level.MEDIUM
+Object 3
+new Level("High level")
+
+Constructor runs:
+
+description = "High level";
+
+Stored in:
+
+Level.HIGH
+Step 4: Then you write
+Level myVar = Level.MEDIUM;
+
+Now:
+
+myVar
+
+references the already-created MEDIUM object.
+
+Step 5: Calling the getter
+myVar.getDescription();
+
+Java executes:
+
+return description;
+
+inside the MEDIUM object.
+
+That object's description is:
+
+"Medium level"
+
+Output:
+
+Medium level
+Visual representation
+Level.LOW
+    |
+    v
++----------------+
+| description    |
+| "Low level"    |
++----------------+
+
+Level.MEDIUM
+    |
+    v
++----------------+
+| description    |
+| "Medium level" |
++----------------+
+
+Level.HIGH
+    |
+    v
++----------------+
+| description    |
+| "High level"   |
++----------------+
+Why constructor must be private
+
+Imagine if this were allowed:
+
+Level x = new Level("Super High");
+
+Now someone created a new enum value.
+
+But enums are supposed to have a fixed set of values.
+
+Java wants only:
+
+LOW
+MEDIUM
+HIGH
+
+and nothing else.
+
+Therefore Java prevents:
+
+new Level(...)
+
+outside the enum.
+
+That's why enum constructors are always private.
+
+The biggest mental model
+
+Forget:
+
+"Enum = list of constants"
+
+Think:
+
+Enum = class whose objects are created in advance and are fixed forever.
+
+For:
+
+enum Level {
+    LOW("Low level"),
+    MEDIUM("Medium level"),
+    HIGH("High level");
+}
+
+Java creates exactly 3 objects:
+
+Level.LOW
+Level.MEDIUM
+Level.HIGH
+
+and those are the only objects that can ever exist.
+
+
+nextBoolean()	Reads a boolean value from the user
+nextByte()	Reads a byte value from the user
+nextDouble()	Reads a double value from the user
+nextFloat()	Reads a float value from the user
+nextInt()	Reads a int value from the user
+nextLine()	Reads a String value from the user
+nextLong()	Reads a long value from the user
+nextShort()	Reads a short value from the user
+
+import java.util.Scanner;
+
+class Main {
+  public static void main(String[] args) {
+    Scanner myObj = new Scanner(System.in);
+
+    System.out.println("Enter name, age and salary:");
+
+    // String input
+    String name = myObj.nextLine();
+
+    // Numerical input
+    int age = myObj.nextInt();
+    double salary = myObj.nextDouble();
+
+    // Output input by user
+    System.out.println("Name: " + name);
+    System.out.println("Age: " + age);
+    System.out.println("Salary: " + salary);
+  }
+}
+
+
+Java does not have a built-in Date class, but we can import the java.time package to work with the date and time API. The package includes many date and time classes.
+
+LocalDate	Represents a date (year, month, day (yyyy-MM-dd))
+LocalTime	Represents a time (hour, minute, second and nanoseconds (HH-mm-ss-ns))
+LocalDateTime	Represents both a date and a time (yyyy-MM-dd-HH-mm-ss-ns)
+DateTimeFormatter	Formatter for displaying and parsing date-time objects
+
+import java.time.LocalDate; // import the LocalDate class
+
+public class Main {
+  public static void main(String[] args) {
+    LocalDate myObj = LocalDate.now(); // Create a date object
+    System.out.println(myObj); // Display the current date
+  }
+}
+
+The output will be:
+2026-06-10
+
+
+Display Current Time
+To display the current time (hour, minute, second, and nanoseconds), import the java.time.LocalTime class, and use its now() method:
+
+
+import java.time.LocalTime; // import the LocalTime class
+public class Main {
+  public static void main(String[] args) {
+    LocalTime myObj = LocalTime.now();
+    System.out.println(myObj);
+  }
+}
+This example displays the server's local time, which may differ from your local time:
+16:42:24.629307
+
+
+Display Current Date and Time
+To display the current date and time, import the java.time.LocalDateTime class, and use its now() method:
+
+Example
+import java.time.LocalDateTime; // import the LocalDateTime class
+
+public class Main {
+  public static void main(String[] args) {
+    LocalDateTime myObj = LocalDateTime.now();
+    System.out.println(myObj);
+  }
+}
+The output will be something like this:
+
+2026-06-10T16:42:24.630396
+
+
+Formatting Date and Time
+The "T" in the example above is used to separate the date from the time. You can use the DateTimeFormatter class with the ofPattern() method in the same package to format or parse date-time objects. The following example will remove both the "T" and nanoseconds from the date-time:
+
+Example
+import java.time.LocalDateTime; // Import the LocalDateTime class
+import java.time.format.DateTimeFormatter; // Import the DateTimeFormatter class
+
+public class Main {
+  public static void main(String[] args) {
+    LocalDateTime myDateObj = LocalDateTime.now();
+    System.out.println("Before formatting: " + myDateObj);
+    DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+
+    String formattedDate = myDateObj.format(myFormatObj);
+    System.out.println("After formatting: " + formattedDate);
+  }
+}
+The output will be:
+
+Before Formatting: 2026-06-10T16:42:24.630101
+After Formatting: 10-06-2026 16:42:24
+
