@@ -3091,3 +3091,590 @@ Spring Core
 Spring automatically manages repository beans
 
 
+Right now you know:
+entities
+repositories
+JPA
+Spring Boot
+controllers
+dependency injection
+
+But currently your JPA project is only running inside:
+CommandLineRunner
+
+Real applications expose database operations through:
+REST APIs
+That is the next major milestone.
+
+Build:
+Customer REST API
+
+Architecture:
+HTTP Request
+    ↓
+Controller
+    ↓
+Repository
+    ↓
+Database
+
+This will connect:
+Spring Web
+with:
+Spring Data JPA
+
+
+STEP 1 — Add Spring Web Dependency
+Go to:
+pom.xml
+
+Add dependency:
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+Then:
+reload Maven project
+
+
+Why Needed?
+Currently app has:
+JPA
+DB support
+
+But NO:
+REST controller support
+HTTP endpoints
+
+Spring Web provides:
+Tomcat
+REST APIs
+MVC
+JSON handling
+
+
+
+
+FILE 1 — Main Application
+
+MINIMAL:
+
+package com.example.accessingdatajpa;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class AccessingDataJpaApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(
+                AccessingDataJpaApplication.class,
+                args
+        );
+    }
+}
+PURPOSE
+
+ONLY:
+
+starts Spring Boot app
+
+That’s it.
+
+
+
+FILE 2 — Entity
+
+MINIMAL:
+
+package com.example.accessingdatajpa;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
+public class Customer {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    private String firstName;
+
+    private String lastName;
+
+    protected Customer() {
+    }
+
+    public Customer(
+            String firstName,
+            String lastName) {
+
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+}
+WHY GETTERS STILL NEEDED?
+
+Because when controller returns:
+
+Customer object
+
+Spring/Jackson needs to extract values.
+
+It typically does:
+
+customer.getId()
+customer.getFirstName()
+customer.getLastName()
+
+to generate JSON.
+
+
+
+WITHOUT GETTERS
+You may get:
+empty JSON
+serialization issues
+depending on Jackson configuration.
+
+
+FILE 3 — Repository
+MINIMAL:
+package com.example.accessingdatajpa;
+import org.springframework.data.repository.CrudRepository;
+
+public interface CustomerRepository
+        extends CrudRepository<Customer, Long> {
+}
+
+
+PURPOSE
+Provides:
+findAll()
+findById()
+save()
+automatically.
+
+
+FILE 4 — Controller
+MINIMAL:
+
+package com.example.accessingdatajpa;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class CustomerController {
+
+    private final CustomerRepository repository;
+
+    public CustomerController(
+            CustomerRepository repository) {
+
+        this.repository = repository;
+    }
+
+    @GetMapping("/customers")
+    public Iterable<Customer> allCustomers() {
+
+        return repository.findAll();
+    }
+}
+
+
+
+COMPLETE REQUEST FLOW NOW
+
+Suppose browser opens:
+localhost:8080/customers
+
+STEP 1
+Tomcat receives request.
+
+STEP 2
+DispatcherServlet finds:
+@GetMapping("/customers")
+
+STEP 3
+Controller method executes:
+repository.findAll()
+
+STEP 4
+Repository asks Hibernate.
+
+STEP 5
+Hibernate generates SQL roughly:
+SELECT * FROM customer;
+
+STEP 6
+Database returns rows.
+
+STEP 7
+Hibernate converts rows → Customer objects.
+
+STEP 8
+Controller returns:
+Iterable<Customer>
+
+STEP 9
+Jackson serializes objects.
+THIS is where getters matter.
+Jackson calls:
+getId()
+getFirstName()
+getLastName()
+to extract values.
+
+STEP 10
+JSON response returned to browser.
+
+
+
+GOAL
+We will support:
+URL	            Purpose
+/customers	    get all customers
+/customers/1	get customer by ID
+
+
+STEP 1 — Add Sample Data Back
+Without sample data:
+database empty
+GET APIs return empty results
+So we’ll add MINIMAL startup data.
+
+FILE 1 — Main Application
+Replace with this:
+
+package com.example.accessingdatajpa;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+@SpringBootApplication
+public class AccessingDataJpaApplication {
+
+    public static void main(String[] args) {
+
+        SpringApplication.run(
+                AccessingDataJpaApplication.class,
+                args
+        );
+    }
+
+    @Bean
+    public CommandLineRunner demo(
+            CustomerRepository repository) {
+
+        return args -> {
+
+            repository.save(
+                    new Customer("Parth", "Yadav"));
+
+            repository.save(
+                    new Customer("John", "Doe"));
+        };
+    }
+}
+
+
+
+PURPOSE OF THIS FILE NOW
+Two responsibilities:
+1. Start Application
+SpringApplication.run(...)
+2. Insert Sample Data Once
+repository.save(...)
+ONLY during startup.
+
+
+FILE 2 — Entity
+package com.example.accessingdatajpa;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
+public class Customer {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    private String firstName;
+
+    private String lastName;
+
+    protected Customer() {
+    }
+
+    public Customer(
+            String firstName,
+            String lastName) {
+
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+}
+
+PURPOSE
+Represents:
+database table row
+API response object
+
+
+FILE 3 — Repository
+package com.example.accessingdatajpa;
+
+import org.springframework.data.repository.CrudRepository;
+
+public interface CustomerRepository
+        extends CrudRepository<Customer, Long> {
+}
+
+PURPOSE
+Database access layer.
+Provides automatically:
+save()
+findAll()
+findById()
+
+
+
+FILE 4 — Controller
+Now add SECOND GET endpoint.
+
+package com.example.accessingdatajpa;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class CustomerController {
+
+    private final CustomerRepository repository;
+
+    public CustomerController(
+            CustomerRepository repository) {
+
+        this.repository = repository;
+    }
+
+    @GetMapping("/customers")
+    public Iterable<Customer> allCustomers() {
+
+        return repository.findAll();
+    }
+
+    @GetMapping("/customers/{id}")
+    public Customer customerById(
+            @PathVariable Long id) {
+
+        return repository.findById(id)
+                .orElse(null);
+    }
+}
+
+
+
+NOW UNDERSTAND COMPLETE FLOW
+CASE 1
+Browser opens:
+localhost:8080/customers
+
+STEP 1 — Browser Sends Request
+GET /customers
+
+STEP 2 — Tomcat Receives Request
+Embedded Tomcat server receives request.
+
+STEP 3 — DispatcherServlet Finds Matching Endpoint
+Spring checks:
+@GetMapping("/customers")
+inside:
+CustomerController
+
+STEP 4 — Controller Method Executes
+return repository.findAll();
+
+STEP 5 — Repository Executes Query
+Hibernate generates roughly:
+SELECT * FROM customer;
+
+STEP 6 — Database Returns Rows
+Example rows:
+id	first_name	last_name
+1	Parth	    Yadav
+2	John	    Doe
+
+STEP 7 — Hibernate Creates Customer Objects
+Rows become:
+Customer objects
+
+STEP 8 — Controller Returns Objects
+Iterable<Customer>
+
+STEP 9 — Jackson Serializes Objects
+Jackson calls:
+getId()
+getFirstName()
+getLastName()
+THIS is where getters are used.
+
+STEP 10 — JSON Response Sent
+Browser receives:
+[
+  {
+    "id": 1,
+    "firstName": "Parth",
+    "lastName": "Yadav"
+  },
+  {
+    "id": 2,
+    "firstName": "John",
+    "lastName": "Doe"
+  }
+]
+
+CASE 2
+Browser opens:
+localhost:8080/customers/1
+
+STEP 1
+Request:
+GET /customers/1
+
+STEP 2
+Spring matches:
+@GetMapping("/customers/{id}")
+
+STEP 3
+1 extracted into:
+@PathVariable Long id
+So:
+id = 1
+
+STEP 4
+Controller calls:
+repository.findById(1L)
+
+STEP 5
+Hibernate generates roughly:
+SELECT * FROM customer
+WHERE id = 1;
+
+STEP 6
+DB returns row.
+
+STEP 7
+Hibernate converts row → Customer object.
+
+STEP 8
+Jackson serializes object using getters.
+
+STEP 9
+Browser receives:
+{
+  "id": 1,
+  "firstName": "Parth",
+  "lastName": "Yadav"
+}
+
+You now clearly have:
+
+Layer	    Responsibility
+Controller	handles HTTP
+Repository	talks to DB
+Hibernate	ORM conversion
+Jackson	    JSON conversion
+Entity	    shared data structure
+
+This is the core architecture of Spring Boot backend systems.
+
+
+
+Serialization
+Means:
+Convert object into transferable format
+
+Usually:
+JSON
+XML
+bytes
+
+
+In Spring REST APIs
+Most commonly:
+Java Object → JSON
+This process is called:
+Serialization
+
+
+Example
+You return this from controller:
+return new Customer("Parth", "Yadav");
+
+But browser DOES NOT understand:
+Java objects
+Java memory structures
+
+Browser understands:
+JSON
+text
+HTTP response data
+So Spring converts object into JSON.
+
+
+Java Object In Memory
+Conceptually:
+Customer object
+    id = 1
+    firstName = "Parth"
+    lastName = "Yadav"
+
+
+Java Object In Memory
+
+Conceptually:
+
+Customer object
+    id = 1
+    firstName = "Parth"
+    lastName = "Yadav"
+
+
