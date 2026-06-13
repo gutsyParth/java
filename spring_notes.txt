@@ -1948,3 +1948,1146 @@ JSON Response
 
 
 
+
+
+Until now:
+
+Request
+   ↓
+Controller
+   ↓
+Service
+   ↓
+Return response
+
+No permanent storage existed.
+
+
+NOW We Add
+Database
+
+Architecture becomes:
+
+Request
+   ↓
+Controller
+   ↓
+Service
+   ↓
+Repository
+   ↓
+Database
+
+This is real backend architecture.
+
+JPA: Java Persistence API
+
+Persistence Means
+Storing data permanently
+
+Example:
+save users
+save orders
+save products
+
+into database.
+
+
+IMPORTANT
+JPA is NOT database.
+JPA is NOT ORM implementation.
+JPA is: specification/interface/standard
+
+
+Hibernate
+Most common JPA implementation.
+
+Think:
+Thing	Meaning
+JPA	rules/specification
+Hibernate	actual implementation
+
+Spring Boot usually uses:
+Hibernate internally
+
+ORM: Object Relational Mapping
+
+
+Problem ORM Solves
+
+Relational DB stores:
+tables
+rows
+columns
+
+Java uses:
+objects
+classes
+
+ORM maps:
+Java Object ↔ Database Table
+
+
+Example
+Java:
+Customer customer = new Customer("Parth", "Yadav");
+becomes database row:
+
+id	first_name	last_name
+1	Parth	Yadav
+
+
+What Is H2?
+H2 is:
+lightweight in-memory database
+Perfect for learning.
+No installation required.
+
+
+STEP 2 — Open Project in IntelliJ
+Same as before.
+
+Wait for:
+Maven download
+indexing
+dependency resolution
+
+
+STEP 3 — Understand NEW Dependencies
+Spring Data JPA
+
+Provides:
+repositories
+ORM support
+database abstraction
+Hibernate integration
+
+
+H2 Database
+Provides: in-memory database
+Data disappears when app stops.
+Perfect for learning.
+
+
+STEP 4 — Create Customer Entity
+Create:
+Customer.java
+
+package com.example.accessingdatajpa;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
+public class Customer {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    private String firstName;
+
+    private String lastName;
+
+    protected Customer() {
+    }
+
+    public Customer(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Customer[id=%d, firstName='%s', lastName='%s']",
+                id, firstName, lastName);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+}
+
+
+This class:
+Customer
+is NOT just a normal Java class anymore.
+
+It is now: A Database-Mapped Java Object
+
+Meaning: Java Object ↔ Database Table Row
+
+
+What Spring + JPA + Hibernate Will Do
+
+This Java object:
+new Customer("Parth", "Yadav")
+will automatically become:
+id  first_name  last_name
+1   Parth       Yadav
+
+inside database.
+WITHOUT writing SQL manually.
+This is ORM.
+
+
+PACKAGE
+package com.example.accessingdatajpa;
+Just package structure.
+No JPA-specific meaning.
+
+IMPORTS
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+These come from:
+Jakarta Persistence API (JPA)
+
+These annotations tell ORM framework:
+how class maps to database.
+
+
+@Entity
+Meaning: "This class should be mapped to a database table."
+
+
+Without @Entity
+Spring/Hibernate treats it as:
+normal Java class only
+NOT database entity.
+
+
+Because no @Table annotation exists:
+Hibernate assumes table name:
+customer
+(or Customer depending on naming strategy).
+
+
+Class ↔ Table
+Object ↔ Row
+Field ↔ Column
+This is ORM mapping.
+
+CLASS
+public class Customer
+
+Represents:
+customer entity
+customer table row
+
+@Id
+Means: "This field is PRIMARY KEY."
+
+
+Why Primary Key Important?
+Database uses it for:
+uniqueness
+indexing
+relationships
+retrieval
+updates
+Almost every table needs one.
+
+private Long id;
+Represents: primary key column
+
+Why Long Not long?
+Because:
+before saving, ID may be null
+wrapper class allows null
+Primitive long cannot be null.
+
+@GeneratedValue
+@GeneratedValue(strategy = GenerationType.AUTO)
+
+Means: "Database/Hibernate should generate ID automatically."
+
+
+Without This
+YOU would manually assign IDs: customer.setId(1);
+which is bad and error-prone.
+
+
+GenerationType.AUTO
+
+Means: "Choose appropriate ID generation strategy automatically."
+
+Hibernate decides:
+sequence
+identity
+auto increment
+etc.
+
+depending on database.
+
+
+When you create object:
+new Customer("Parth", "Yadav")
+
+ID is initially:
+null
+
+After saving to DB:
+id gets generated automatically
+
+
+THESE FIELDS
+private String firstName;
+
+private String lastName;
+
+become:
+database columns
+
+Because No Annotation Exists
+Hibernate assumes: fields map directly to columns.
+
+
+TABLE MAPPING
+This class approximately becomes:
+Database Column     Java Field
+id	                id
+first_name	        firstName
+last_name	        lastName
+
+
+This class is BOTH:
+Thing           Role
+Java Object	    runtime object
+Database Entity	table mapping
+That dual nature is central to JPA.
+
+
+
+EMPTY CONSTRUCTOR
+protected Customer() {
+}
+Why Does JPA Need It?
+Hibernate/JPA internally creates objects using:
+reflection
+
+Framework needs:
+no-argument constructor
+
+Reflection- Framework dynamically creates objects at runtime.
+
+Something conceptually like:
+Customer customer = Customer.class.newInstance();
+
+Why protected?
+You usually should NOT manually use empty constructor.
+
+It exists mainly: for JPA internals
+
+So:
+not public
+but accessible to framework
+
+
+MAIN CONSTRUCTOR
+public Customer(String firstName, String lastName)
+This is YOUR usable constructor.
+
+Used for:
+new Customer("Parth", "Yadav")
+
+Notice:
+id not included
+
+Because:
+DB generates ID automatically.
+
+this.firstName = firstName;
+Assigns constructor parameter → object field.
+
+@Override Means: "This method overrides parent class method."
+
+
+Which Parent Method?
+From:
+Object class
+
+Every Java class extends:
+Object
+
+Object has:
+toString()
+
+
+toString()
+public String toString()
+
+Controls:
+object print representation
+
+
+Example
+Without override:
+Customer@4a54c0de
+Ugly default object output.
+
+With Override
+Customer[id=1, firstName='Parth', lastName='Yadav']
+Much more readable.
+
+VERY useful for:
+debugging
+logging
+
+String.format()
+Formats string nicely.
+
+
+GETTERS
+public Long getId()
+Getter methods provide controlled access to fields.
+
+
+Why Not Public Fields?
+Encapsulation principle.
+Better practice:
+private fields
+public getters
+
+
+NO SETTERS HERE
+Interesting important detail.
+
+Why?
+Because:
+immutable-ish entity style
+only constructor initializes fields
+Though many enterprise entities DO use setters.
+
+
+This class now has TWO LIVES simultaneously.
+1. Java Runtime Life
+Customer customer = new Customer(...)
+Normal Java object.
+
+2. Database Representation
+Hibernate converts object ↔ database row automatically.
+
+
+COMPLETE ORM MAPPING MENTAL MODEL
+Customer Java Object
+        ↓ ORM
+--------------------------------
+| id | first_name | last_name |
+--------------------------------
+| 1  | Parth      | Yadav     |
+--------------------------------
+
+This mapping is the heart of JPA/Hibernate.
+
+@Entity
+Class maps to database table
+
+@Id
+Primary key field
+
+@GeneratedValue
+ID generated automatically
+
+Empty Constructor
+Required by JPA/Hibernate internally
+
+ORM
+Java Object ↔ Database Row
+
+Hibernate
+Converts objects into SQL/database operations automatically
+
+
+FIRST Understand The BIG PICTURE
+Until now:
+Controller
+   ↓
+Returns objects
+
+But objects were NOT stored permanently.
+
+Now:
+Repository
+becomes bridge between:
+Java objects
+and
+database
+
+
+What Is Repository?
+Repository is basically:
+Database access layer
+
+Its job:
+save data
+retrieve data
+update data
+delete data
+
+
+Architecture Now
+Controller
+   ↓
+Service
+   ↓
+Repository
+   ↓
+Database
+
+VERY important layered architecture.
+
+
+INTERFACE
+public interface CustomerRepository
+
+Important:
+This is ONLY interface.
+You are NOT implementing it yourself.
+
+
+Spring Data JPA automatically creates implementation at runtime.
+You write ONLY interface.
+Spring generates actual class dynamically.
+
+
+extends CrudRepository<Customer, Long>
+
+
+CrudRepository
+Provided by Spring Data JPA.
+Contains built-in database operations.
+CRUD means:
+Letter	Meaning
+C	    Create
+R	    Read
+U	    Update
+D	    Delete
+
+
+Generic Parameters
+<Customer, Long>
+
+mean:
+Parameter	Meaning
+Customer	entity type
+Long	    primary key type
+
+This line means: "This repository manages Customer entities whose ID type is Long."
+
+
+What Methods You Automatically Get
+
+Without writing ANY code, you now get:
+save()
+findAll()
+findById()
+delete()
+count()
+existsById()
+
+This is HUGE productivity gain.
+
+
+Later:
+repository.save(customer);
+automatically inserts into DB.
+WITHOUT SQL.
+
+
+CUSTOM QUERY METHOD
+List<Customer> findByLastName(String lastName);
+This is one of the MOST magical Spring Data features.
+
+
+You did NOT implement this method.
+Yet it will work.
+Why?
+Because Spring parses method name.
+
+
+Spring Reads
+findByLastName
+and internally generates query like:
+SELECT * FROM customer
+WHERE last_name = ?
+
+AUTOMATICALLY.
+This is called:
+Query Derivation
+
+
+Spring Data JPA can generate queries from method names.
+
+Examples:
+Method Name             Generated Meaning
+findByLastName	        WHERE last_name=?
+findByFirstName	        WHERE first_name=?
+findByAgeGreaterThan	WHERE age > ?
+findByEmailContaining	LIKE %email%
+
+Return Type
+List<Customer>
+because:
+many customers can share same last name.
+
+SECOND METHOD
+Customer findById(long id);
+Fetches:
+single customer by ID.
+
+Modern Spring usually returns:
+Optional<Customer>
+instead of direct Customer.
+But this guide simplifies it for beginners.
+
+You wrote:
+interface only
+
+NO SQL.
+NO implementation class.
+NO JDBC code.
+Yet database operations will work.
+This is the BIG power of Spring Data JPA.
+
+
+What Happens Internally
+Spring sees:
+extends CrudRepository
+
+Then:
+dynamically creates implementation
+creates repository bean
+injects repository where needed
+
+
+Repository Itself Is ALSO A BEAN
+VERY important.
+
+Spring container manages:
+CustomerRepository implementation object
+automatically.
+
+
+CustomerRepository interface
+        ↓
+Spring generates implementation
+        ↓
+Hibernate generates SQL
+        ↓
+Database executes query
+
+This layered abstraction is central to modern backend engineering.
+
+
+Repository
+Database access layer
+
+CrudRepository
+Provides built-in CRUD operations
+
+Spring Data JPA Magic
+Implementation generated automatically
+
+Query Derivation
+Method names generate SQL automatically
+
+Entity + Repository Together
+Entity = WHAT is stored
+Repository = HOW it is stored/retrieved
+
+
+
+
+
+STEP 1 — Open Main Application Class
+
+Open:
+
+AccessingDataJpaApplication.java
+
+It currently probably looks like:
+
+@SpringBootApplication
+public class AccessingDataJpaApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(AccessingDataJpaApplication.class, args);
+    }
+}
+STEP 2 — Replace It With This
+
+Paste EXACTLY:
+
+package com.example.accessingdatajpa;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+@SpringBootApplication
+public class AccessingDataJpaApplication {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(AccessingDataJpaApplication.class);
+
+    public static void main(String[] args) {
+        SpringApplication.run(AccessingDataJpaApplication.class, args);
+    }
+
+    @Bean
+    public CommandLineRunner demo(CustomerRepository repository) {
+
+        return (args) -> {
+
+            // save customers
+            repository.save(new Customer("Jack", "Bauer"));
+            repository.save(new Customer("Chloe", "O'Brian"));
+            repository.save(new Customer("Kim", "Bauer"));
+            repository.save(new Customer("David", "Palmer"));
+            repository.save(new Customer("Michelle", "Dessler"));
+
+            // fetch all customers
+            logger.info("Customers found with findAll():");
+
+            logger.info("-------------------------------");
+
+            repository.findAll().forEach(customer -> {
+                logger.info(customer.toString());
+            });
+
+            logger.info("");
+
+            // fetch customer by ID
+            Customer customer = repository.findById(1L);
+
+            logger.info("Customer found with findById(1L):");
+
+            logger.info("--------------------------------");
+
+            logger.info(customer.toString());
+
+            logger.info("");
+
+            // fetch customers by last name
+            logger.info("Customer found with findByLastName('Bauer'):");
+
+            logger.info("--------------------------------------------");
+
+            repository.findByLastName("Bauer").forEach(bauer -> {
+                logger.info(bauer.toString());
+            });
+
+            logger.info("");
+        };
+    }
+}
+
+
+
+public CommandLineRunner demo(CustomerRepository repository)
+Spring automatically injects:
+CustomerRepository repository
+
+This proves:
+repository implementation bean exists
+Spring created it automatically
+
+Even though YOU never implemented repository class.
+
+
+What Spring Did Internally
+You wrote:
+interface CustomerRepository
+
+Spring:
+generated implementation dynamically
+created bean
+injected bean here
+
+
+repository.save(...)
+You are saving Java objects into database.
+WITHOUT writing SQL.
+
+
+What Happens Internally
+This:
+repository.save(new Customer(...))
+internally becomes something LIKE:
+INSERT INTO customer (...)
+VALUES (...)
+Hibernate generates SQL automatically.
+
+
+ORM MAGIC HAPPENING
+Java Object
+     ↓
+Hibernate ORM
+     ↓
+SQL INSERT
+     ↓
+Database Row
+
+
+repository.findAll()
+automatically fetches ALL rows.
+Internally becomes something like:
+SELECT * FROM customer
+WITHOUT you writing SQL.
+
+
+forEach
+repository.findAll().forEach(...)
+Loops through all customers.
+
+
+
+repository.findById(1L)
+Finds customer with:
+primary key ID = 1
+Why 1L?
+Because:
+ID type is Long
+
+L means:
+long literal
+
+
+repository.findByLastName("Bauer")
+Remember:
+YOU NEVER IMPLEMENTED THIS METHOD.
+Spring generates query automatically from method name.
+Internally something LIKE:
+SELECT * FROM customer
+WHERE last_name = 'Bauer'
+This is:
+Query Derivation
+
+
+LOGGER
+private static final Logger logger
+Professional logging mechanism.
+
+Better than:
+System.out.println
+
+
+Why Logging Used?
+Because logging frameworks provide:
+log levels
+filtering
+file logging
+production monitoring
+
+
+logger.info()
+Prints INFO-level logs.
+
+
+
+Application Starts
+      ↓
+Spring Container Starts
+      ↓
+Repository Bean Created
+      ↓
+Hibernate Starts
+      ↓
+H2 Database Starts
+      ↓
+CommandLineRunner Executes
+      ↓
+Objects Saved Into DB
+      ↓
+Queries Executed
+      ↓
+Results Printed
+
+
+
+JPA Entity Class
+MUST REMEMBER SYNTAX
+@Entity
+public class Customer {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    private String firstName;
+
+    private String lastName;
+
+    protected Customer() {
+    }
+
+    public Customer(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+}
+
+
+
+MUST REMEMBER ANNOTATIONS
+@Entity
+Meaning:
+This class maps to database table
+
+@Id
+Marks:
+primary key field
+
+@GeneratedValue(strategy = GenerationType.AUTO)
+Auto-generates IDs.
+
+
+JPA entities REQUIRE:
+protected Customer() {
+}
+No-argument constructor.
+
+Required internally by:
+Hibernate/JPA
+
+
+Use:
+Long
+
+instead of:
+long
+
+because:
+IDs may initially be null.
+
+
+Repository Interface
+public interface CustomerRepository
+        extends CrudRepository<Customer, Long> {
+}
+
+
+CrudRepository<Entity, IdType>
+means:
+Type	    Meaning
+Customer	entity type
+Long	    primary key type
+
+
+You ONLY write:
+interface
+
+Spring automatically:
+creates implementation
+
+
+Custom Query Method
+List<Customer> findByLastName(String lastName);
+
+
+Spring generates query automatically from:
+method name
+This is:
+Query Derivation
+
+
+Common Query Syntax Patterns
+Find By Field
+findByFirstName(String firstName)
+
+Find By Email
+findByEmail(String email)
+
+Find By Age
+findByAge(int age)
+
+Find By Name And Age
+findByNameAndAge(String name, int age)
+
+MUST REMEMBER
+Method names themselves generate SQL.
+
+
+Saving Data
+repository.save(
+    new Customer("Parth", "Yadav")
+);
+
+This internally becomes:
+INSERT INTO customer ...
+generated automatically by Hibernate.
+
+
+Fetching All Data
+repository.findAll()
+
+Example
+repository.findAll().forEach(customer -> {
+    logger.info(customer.toString());
+});
+
+Equivalent SQL roughly:
+
+SELECT * FROM customer;
+
+
+Fetch By ID
+repository.findById(1L)
+
+
+1L
+means:
+Long literal
+
+
+CommandLineRunner
+@Bean
+public CommandLineRunner demo(
+        CustomerRepository repository) {
+
+    return args -> {
+
+    };
+}
+
+
+Spring automatically injects:
+repository bean
+into:
+CommandLineRunner
+
+
+Repository Injection
+public CommandLineRunner demo(
+        CustomerRepository repository)
+
+
+Spring automatically:
+creates repository implementation
+injects it
+
+
+Logger Syntax
+private static final Logger logger =
+        LoggerFactory.getLogger(MyClass.class);
+
+
+Logging
+logger.info("Message");
+
+
+Full Minimal JPA Flow
+
+Entity
+   ↓
+Repository
+   ↓
+Hibernate ORM
+   ↓
+Database
+
+
+Entity ↔ Table Mapping
+
+Class ↔ Table
+Field ↔ Column
+Object ↔ Row
+
+
+Customer customer = new Customer("Parth", "Yadav");
+becomes:
+id	first_name	last_name
+1	Parth	    Yadav
+
+
+Hibernate:
+converts objects → SQL
+converts DB rows → objects
+Automatically.
+
+
+H2 Database
+jdbc:h2:mem:
+means:
+temporary in-memory database
+Data disappears when app stops.
+
+
+
+What is JPA?
+Java Persistence API
+Specification for ORM/persistence.
+
+What is Hibernate?
+Most common JPA implementation
+
+What is ORM?
+Object Relational Mapping
+Converts:
+Java objects ↔ database rows
+
+What is Entity?
+Class mapped to database table
+
+What is Repository?
+Database access abstraction layer
+
+What is CrudRepository?
+Spring Data interface providing CRUD operations
+
+What is Query Derivation?
+Spring generating queries from method names
+
+If interviewer says:
+“Create simple Spring Boot JPA CRUD structure”
+
+You should immediately think:
+STEP 1 — Entity
+@Entity
+public class User
+
+STEP 2 — Repository
+extends CrudRepository<User, Long>
+
+STEP 3 — Save Data
+repository.save(new User(...))
+
+STEP 4 — Fetch Data
+repository.findAll()
+
+STEP 5 — Custom Query
+findByEmail(String email)
+
+
+
+JPA Core
+Entity objects map to database tables
+
+Spring Data JPA Core
+Repositories abstract database access
+
+Hibernate Core
+Hibernate automatically generates SQL
+
+Spring Core
+Spring automatically manages repository beans
+
+
