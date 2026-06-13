@@ -1,31 +1,54 @@
 package com.example.accessingdatajpa;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class CustomerController {
 
-    private final CustomerRepository repository;
+    private final CustomerService customerService;
 
     public CustomerController(
-            CustomerRepository repository) {
+            CustomerService customerService) {
 
-        this.repository = repository;
+        this.customerService = customerService;
     }
 
     @GetMapping("/customers")
     public Iterable<Customer> allCustomers() {
 
-        return repository.findAll();
+        return customerService.getAllCustomers();
     }
 
     @GetMapping("/customers/{id}")
     public Customer customerById(
             @PathVariable Long id) {
 
-        return repository.findById(id)
-                .orElse(null);
+        return customerService.getCustomerById(id);
+    }
+
+    @PostMapping("/customers")
+    public Customer createCustomer(
+            @RequestBody Customer customer) {
+
+        return customerService.createCustomer(customer);
+    }
+
+    @PutMapping("/customers/{id}")
+    public Customer updateCustomer(
+            @PathVariable Long id,
+            @RequestBody Customer customer) {
+
+        return customerService.updateCustomer(
+                id,
+                customer);
+    }
+
+    @DeleteMapping("/customers/{id}")
+    public String deleteCustomer(
+            @PathVariable Long id) {
+
+        customerService.deleteCustomer(id);
+
+        return "Customer deleted successfully";
     }
 }

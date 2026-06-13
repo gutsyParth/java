@@ -3678,3 +3678,538 @@ Customer object
     lastName = "Yadav"
 
 
+
+
+FIRST THING WE WILL BUILD
+POST API
+GOAL
+Client sends:
+{
+  "firstName": "Parth",
+  "lastName": "Yadav"
+}
+
+Spring automatically creates:
+Customer object
+
+Then we save into DB.
+
+STEP 1 — Add POST Endpoint
+Add this inside controller:
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+Then add:
+@PostMapping("/customers")
+public Customer createCustomer(
+        @RequestBody Customer customer) {
+
+    return repository.save(customer);
+}
+
+@RequestBody Customer customer
+means:
+Take JSON request body
+and convert it into Customer object
+
+using:
+Jackson
+
+COMPLETE FLOW NOW
+
+Suppose client sends:
+POST /customers
+with JSON:
+{
+  "firstName": "Alice",
+  "lastName": "Smith"
+}
+
+STEP 1 — Tomcat Receives Request
+STEP 2 — DispatcherServlet Finds Endpoint
+Matches:
+@PostMapping("/customers")
+STEP 3 — Jackson Deserializes JSON
+JSON:
+{
+  "firstName": "Alice",
+  "lastName": "Smith"
+}
+becomes:
+new Customer("Alice", "Smith")
+conceptually.
+THIS is:
+Deserialization
+
+STEP 4 — Controller Receives Object
+Customer customer
+now contains:
+firstName = Alice
+lastName = Smith
+
+STEP 5 — Repository Saves Object
+repository.save(customer)
+Hibernate generates roughly:
+INSERT INTO customer ...
+
+STEP 6 — Database Generates ID
+Example:
+id	first_name	last_name
+3	Alice	    Smith
+
+STEP 7 — Saved Object Returned
+Hibernate returns updated object containing:
+generated ID
+
+STEP 8 — Jackson Serializes Response
+Returned object becomes JSON:
+{
+  "id": 3,
+  "firstName": "Alice",
+  "lastName": "Smith"
+}
+
+
+
+
+UPDATE API:
+
+ADD THIS TO CONTROLLER
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+Then:
+
+@PutMapping("/customers/{id}")
+public Customer updateCustomer(
+        @PathVariable Long id,
+        @RequestBody Customer updatedCustomer) {
+
+    Customer customer =
+            repository.findById(id)
+                    .orElse(null);
+
+    if (customer == null) {
+        return null;
+    }
+
+    customer.setFirstName(
+            updatedCustomer.getFirstName());
+
+    customer.setLastName(
+            updatedCustomer.getLastName());
+
+    return repository.save(customer);
+}
+BUT WAIT
+
+Your current entity has:
+
+getters
+NO setters
+
+So first add setters inside Customer.
+
+ADD THESE
+public void setFirstName(String firstName) {
+    this.firstName = firstName;
+}
+
+public void setLastName(String lastName) {
+    this.lastName = lastName;
+}
+
+
+
+DELETE API
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+@DeleteMapping("/customers/{id}")
+public String deleteCustomer(
+        @PathVariable Long id) {
+
+    repository.deleteById(id);
+
+    return "Customer deleted";
+}
+
+
+
+
+WHY SERVICE LAYER EXISTS
+
+Controllers should:
+handle HTTP stuff only
+
+Repositories should:
+handle DB stuff only
+
+Business logic belongs in:
+Service Layer
+
+
+CURRENT PROBLEM
+Right now controller directly talks to DB:
+repository.findAll()
+
+This tightly couples:
+HTTP layer
+with:
+DB layer
+Professional systems avoid that.
+
+
+NEW ARCHITECTURE
+We will create:
+CustomerController
+        ↓
+CustomerService
+        ↓
+CustomerRepository
+
+
+Layer	        Responsibility
+Controller	    HTTP/API handling
+Service	        business logic
+Repository	    DB access
+
+
+
+STEP 1 — Create Service Class
+
+Create:
+
+CustomerService.java
+STEP 2 — Add THIS Code
+package com.example.accessingdatajpa;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class CustomerService {
+
+    private final CustomerRepository repository;
+
+    public CustomerService(
+            CustomerRepository repository) {
+
+        this.repository = repository;
+    }
+
+    public Iterable<Customer> getAllCustomers() {
+
+        return repository.findAll();
+    }
+
+    public Customer getCustomerById(Long id) {
+
+        return repository.findById(id)
+                .orElse(null);
+    }
+
+    public Customer createCustomer(
+            Customer customer) {
+
+        return repository.save(customer);
+    }
+
+    public Customer updateCustomer(
+            Long id,
+            Customer updatedCustomer) {
+
+        Customer customer =
+                repository.findById(id)
+                        .orElse(null);
+
+        if (customer == null) {
+            return null;
+        }
+
+        customer.setFirstName(
+                updatedCustomer.getFirstName());
+
+        customer.setLastName(
+                updatedCustomer.getLastName());
+
+        return repository.save(customer);
+    }
+
+    public void deleteCustomer(Long id) {
+
+        repository.deleteById(id);
+    }
+}
+IMPORTANT
+
+This class now owns:
+
+customer business operations
+
+Controller no longer directly talks to DB.
+
+STEP 3 — Understand @Service
+@Service
+
+means:
+
+Create Spring-managed service bean
+
+Exactly like:
+
+@RestController
+@Repository
+@Component
+STEP 4 — Refactor Controller
+
+Replace controller with:
+
+package com.example.accessingdatajpa;
+
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+public class CustomerController {
+
+    private final CustomerService customerService;
+
+    public CustomerController(
+            CustomerService customerService) {
+
+        this.customerService = customerService;
+    }
+
+    @GetMapping("/customers")
+    public Iterable<Customer> allCustomers() {
+
+        return customerService.getAllCustomers();
+    }
+
+    @GetMapping("/customers/{id}")
+    public Customer customerById(
+            @PathVariable Long id) {
+
+        return customerService.getCustomerById(id);
+    }
+
+    @PostMapping("/customers")
+    public Customer createCustomer(
+            @RequestBody Customer customer) {
+
+        return customerService.createCustomer(customer);
+    }
+
+    @PutMapping("/customers/{id}")
+    public Customer updateCustomer(
+            @PathVariable Long id,
+            @RequestBody Customer customer) {
+
+        return customerService.updateCustomer(
+                id,
+                customer);
+    }
+
+    @DeleteMapping("/customers/{id}")
+    public String deleteCustomer(
+            @PathVariable Long id) {
+
+        customerService.deleteCustomer(id);
+
+        return "Customer deleted successfully";
+    }
+}
+NOW LOOK CAREFULLY
+
+Controller NO LONGER uses:
+
+repository
+
+Instead:
+
+customerService
+
+VERY important architectural shift.
+
+
+“Why service layer?”
+Strong answer:
+Service layer separates business logic
+from HTTP layer and persistence layer,
+making application cleaner,
+maintainable, reusable and testable.
+
+
+
+Spring now manages:
+
+Bean	            Created By
+CustomerController	Spring
+CustomerService	    Spring
+CustomerRepository	Spring
+
+And injects dependencies automatically.
+
+DEPENDENCY CHAIN NOW
+CustomerController
+    depends on
+CustomerService
+
+CustomerService
+    depends on
+CustomerRepository
+
+Spring wires everything automatically.
+
+
+
+LOOK CAREFULLY AT CONTROLLER
+private final CustomerService customerService;
+
+This declares:
+
+CustomerController NEEDS CustomerService
+
+BUT this line alone does NOT create object.
+
+REAL CONNECTION HAPPENS HERE
+public CustomerController(
+        CustomerService customerService) {
+
+    this.customerService = customerService;
+}
+
+THIS constructor is the actual connection point.
+
+VERY IMPORTANT
+
+You are NOT creating service manually.
+
+YOU are saying to Spring:
+
+"Whenever you create CustomerController,
+please provide a CustomerService object."
+NOW LOOK AT THIS
+@Service
+public class CustomerService
+
+This tells Spring:
+
+"Create and manage CustomerService object as bean."
+WHAT SPRING DOES INTERNALLY
+
+During startup Spring scans classes.
+
+It finds:
+
+@RestController
+
+and:
+
+@Service
+
+So Spring creates:
+
+CustomerController bean
+CustomerService bean
+THEN SPRING SEES
+
+Controller constructor requires:
+
+CustomerService
+
+So Spring thinks:
+
+"I already have CustomerService bean.
+I will inject it."
+INTERNALLY SPRING DOES SOMETHING LIKE
+
+Conceptually:
+
+CustomerService service =
+        new CustomerService(repository);
+
+CustomerController controller =
+        new CustomerController(service);
+
+YOU never wrote this.
+
+Spring wrote it internally.
+
+THIS IS CALLED
+Dependency Injection
+
+Because:
+
+controller DEPENDS on service
+Spring INJECTS dependency automatically
+
+
+
+VISUAL FLOW
+Spring Container
+      │
+      ├── creates CustomerRepository bean
+      │
+      ├── creates CustomerService bean
+      │        ↑
+      │        │ needs repository
+      │
+      ├── creates CustomerController bean
+               ↑
+               │ needs service
+
+
+SAME THING HAPPENS IN SERVICE
+
+LOOK HERE:
+
+private final CustomerRepository repository;
+
+Again:
+
+declaration only
+
+REAL connection happens here:
+
+public CustomerService(
+        CustomerRepository repository) {
+
+    this.repository = repository;
+}
+
+Again Spring injects repository automatically.
+
+COMPLETE DEPENDENCY CHAIN
+CustomerController
+        ↓ depends on
+CustomerService
+        ↓ depends on
+CustomerRepository
+
+Spring automatically wires all this together.
+
+
+
+MOST IMPORTANT REALIZATION
+
+YOU NEVER CREATE:
+
+new CustomerController()
+new CustomerService()
+new CustomerRepository()
+
+Spring container creates and manages them.
+
+THIS IS WHY SPRING EXISTS
+
+Core Spring idea:
+
+Framework manages object creation and wiring.
+
+instead of developer manually doing:
+
+new Something()
+
+everywhere.
+
+
+
